@@ -1,4 +1,4 @@
-export default modules = [
+export const modules = [
   {
     _id: "M101",
     name: "Introduction to Rocket Propulsion",

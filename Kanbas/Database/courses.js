@@ -1,4 +1,4 @@
-export default courses = [
+export const courses = [
   {
     _id: "RS101",
     name: "Rocket Propulsion",
