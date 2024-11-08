@@ -5,10 +5,8 @@ let todos = [
   { id: 4, title: "Task 4", completed: true },
 ];
 export default function WorkingWithArrays(app) {
-  app.post("/lab5/todos", (req, res) => {
-    const newTodo = { ...req.body, id: new Date().getTime() };
-    todos.push(newTodo);
-    res.json(newTodo);
+  app.get("/lab5/todos", (req, res) => {
+    res.json(todos);
   });
 
   app.get("/lab5/todos/:id", (req, res) => {
@@ -16,6 +14,29 @@ export default function WorkingWithArrays(app) {
     const todo = todos.find((t) => t.id === parseInt(id));
     res.json(todo);
   });
+
+  app.post("/lab5/todos/:id", (req, res) => {
+    const { id } = req.params; // Path parameter
+    const todoData = req.body; // Data from the request body
+
+    // Example of using both id and body data
+    const todo = todos.find((t) => t.id === parseInt(id));
+    if (todo) {
+      // Update or process todo with data from req.body
+      todo.title = todoData.title || todo.title; // Example: updating title
+      todo.completed = todoData.completed ?? todo.completed;
+      res.json(todo);
+    } else {
+      res.status(404).json({ error: "Todo not found" });
+    }
+  });
+
+  app.put("/lab5/todos/:id", (req, res) => {
+    const { id } = req.params;
+    const todo = todos.find((t) => t.id === parseInt(id));
+    res.json(todo);
+  });
+
   app.get("/lab5/todos/create", (req, res) => {
     const newTodo = {
       id: new Date().getTime(),
