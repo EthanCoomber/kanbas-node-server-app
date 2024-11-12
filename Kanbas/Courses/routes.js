@@ -1,9 +1,12 @@
 import Database from "../Database/index.js";
+import * as dao from "./dao.js";
+
 export default function CourseRoutes(app) {
   app.get("/api/courses", (req, res) => {
-    const courses = Database.courses;
+    const courses = dao.findAllCourses();
     res.send(courses);
   });
+
   app.post("/api/courses", (req, res) => {
     const course = { ...req.body, _id: new Date().getTime().toString() };
     Database.courses.push(course);

@@ -10,7 +10,7 @@ export default function AssignmentRoutes(app) {
     const newAssignment = {
       ...req.body,
       course: cid,
-      _id: new Date().getTime().toString(),
+      // _id: new Date().getTime().toString(),
     };
     db.assignments.push(newAssignment);
     res.send(newAssignment);
