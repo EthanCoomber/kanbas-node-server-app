@@ -7,6 +7,37 @@ export default function CourseRoutes(app) {
     res.send(courses);
   });
 
+  // const findCoursesForEnrolledUser = (req, res) => {
+  //   let { userId } = req.params;
+  //   if (userId === "current") {
+  //     const currentUser = req.session["currentUser"];
+  //     if (!currentUser) {
+  //       res.sendStatus(401);
+  //       return;
+  //     }
+  //     userId = currentUser._id;
+  //   }
+  //   const courses = courseDao.findCoursesForEnrolledUser(userId);
+  //   res.json(courses);
+  // };
+  app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
+
+  app.get("/api/courses/current/courses", (req, res) => {
+    console.log("req courses", req.body);
+    const currentUser = req.session["currentUser"];
+
+    console.log("currentUser", currentUser);
+
+    if (!currentUser) {
+      res.sendStatus(401);
+      return;
+    }
+
+    const courses = courseDao.findCoursesForEnrolledUser(currentUser._id);
+
+    res.json(courses);
+  });
+
   app.post("/api/courses", (req, res) => {
     const course = { ...req.body, _id: new Date().getTime().toString() };
     Database.courses.push(course);

@@ -31,14 +31,14 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
-UserRoutes(app);
 
 app.use(session(sessionOptions));
 
 app.use(express.json());
+UserRoutes(app);
+CourseRoutes(app);
 ModuleRoutes(app);
 AssignmentRoutes(app);
-CourseRoutes(app);
 Lab5(app);
 Hello(app);
 app.listen(process.env.PORT || 4000);
