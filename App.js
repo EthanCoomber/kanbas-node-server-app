@@ -31,7 +31,6 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
-
 app.use(session(sessionOptions));
 
 app.use(express.json());

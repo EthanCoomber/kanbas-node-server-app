@@ -30,12 +30,13 @@ export default function UserRoutes(app) {
   const signin = (req, res) => {
     // console.log("req.body", req);
     const { username, password } = req.body;
-    const currentUser = dao.findUserByCredentials(username, password);
-    if (currentUser) {
-      req.session["currentUser"] = currentUser;
-      res.json(currentUser);
+    const user = dao.findUserByCredentials(username, password); // Example logic
+    if (user) {
+      req.session.currentUser = user;
+      console.log("Session Set:", req.session);
+      res.json(user);
     } else {
-      res.status(401).json({ message: "Unable to log in. try again later." });
+      res.sendStatus(401);
     }
   };
 
@@ -55,9 +56,13 @@ export default function UserRoutes(app) {
   };
 
   const findCoursesForEnrolledUser = (req, res) => {
+    console.log("here?");
     let { userId } = req.params;
+    console.log("userId", userId);
+
     if (userId === "current") {
       const currentUser = req.session["currentUser"];
+      console.log("currentUser", currentUser);
       if (!currentUser) {
         res.sendStatus(401);
         return;
