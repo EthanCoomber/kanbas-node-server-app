@@ -1,5 +1,6 @@
 import * as dao from "./dao.js";
 import * as courseDao from "../Courses/dao.js";
+import * as enrollmentsDao from "../Enrollments/dao.js";
 
 export default function UserRoutes(app) {
   const createUser = (req, res) => {};
@@ -46,12 +47,11 @@ export default function UserRoutes(app) {
   };
 
   const profile = async (req, res) => {
-    // console.log("req", req.body);
     const currentUser = req.session["currentUser"];
-    // if (!currentUser) {
-    //   res.sendStatus(401);
-    //   return;
-    // }
+    if (!currentUser) {
+      res.sendStatus(401);
+      return;
+    }
     res.json(currentUser);
   };
 
@@ -74,6 +74,14 @@ export default function UserRoutes(app) {
   };
 
   app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
+
+  const createCourse = (req, res) => {
+    const currentUser = req.session["currentUser"];
+    const newCourse = courseDao.createCourse(req.body);
+    enrollmentsDao.enrollUserInCourse(currentUser._id, newCourse._id);
+    res.json(newCourse);
+  };
+  app.post("/api/users/current/courses", createCourse);
 
   app.post("/api/users", createUser);
   app.get("/api/users", findAllUsers);
