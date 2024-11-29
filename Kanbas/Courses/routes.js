@@ -13,20 +13,12 @@ export default function CourseRoutes(app) {
     res.send(courses);
   });
 
-  app.delete("/api/courses/:id", (req, res) => {
-    const courseId = req.params.id;
-
-    const courseExists = dao
-      .findAllCourses()
-      .some((course) => course._id === courseId);
-    if (!courseExists) {
-      return res.status(404).send({ message: "Course not found" });
-    }
-
-    dao.deleteCourse(courseId);
-
-    res.sendStatus(204);
+  app.delete("/api/courses/:courseId", async (req, res) => {
+    const { courseId } = req.params;
+    const status = await dao.deleteCourse(courseId);
+    res.send(status);
   });
+ 
 
   app.put("/api/courses/:courseId", (req, res) => {
     const { courseId } = req.params;
