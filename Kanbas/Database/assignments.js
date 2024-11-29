@@ -1,8 +1,7 @@
 export const assignments = [
   {
-    _id: "A101",
     title: "Propulsion Assignment",
-    course: "RS101",
+    course: "6749386e9f2ab4abeec4b4da",
     name: "Propulsion Systems Analysis",
     description: "Analyze propulsion systems and their efficiency.",
     points: 100,
@@ -11,9 +10,8 @@ export const assignments = [
     availableUntilDate: "2024-10-31T23:59:00",
   },
   {
-    _id: "A102",
     title: "Combustion Analysis",
-    course: "RS101",
+    course: "6749386e9f2ab4abeec4b4da",
     name: "Advanced Combustion Analysis",
     description: "Examine combustion processes in different environments.",
     points: 80,
@@ -22,9 +20,8 @@ export const assignments = [
     availableUntilDate: "2024-11-11T23:59:00",
   },
   {
-    _id: "A103",
     title: "Nozzle Design Project",
-    course: "RS101",
+    course: "6749386e9f2ab4abeec4b4da",
     name: "Nozzle Design and Optimization",
     description: "Design an efficient nozzle for aerospace applications.",
     points: 120,
@@ -33,9 +30,8 @@ export const assignments = [
     availableUntilDate: "2024-11-16T23:59:00",
   },
   {
-    _id: "A201",
     title: "Aerodynamics Quiz",
-    course: "RS102",
+    course: "6749386e9f2ab4abeec4b4db",
     name: "Basic Aerodynamics Quiz",
     description: "Test your knowledge on aerodynamics principles.",
     points: 50,
@@ -44,9 +40,8 @@ export const assignments = [
     availableUntilDate: "2024-10-26T23:59:00",
   },
   {
-    _id: "A202",
     title: "Flow Analysis",
-    course: "RS102",
+    course: "6749386e9f2ab4abeec4b4db",
     name: "Flow Dynamics Analysis",
     description: "Analyze fluid flow in different scenarios.",
     points: 90,
@@ -55,9 +50,8 @@ export const assignments = [
     availableUntilDate: "2024-11-06T23:59:00",
   },
   {
-    _id: "A203",
     title: "Heating Analysis",
-    course: "RS102",
+    course: "6749386e9f2ab4abeec4b4db",
     name: "Thermal Systems Heating Analysis",
     description: "Examine heating patterns and thermal efficiency.",
     points: 75,
@@ -66,9 +60,8 @@ export const assignments = [
     availableUntilDate: "2024-11-11T23:59:00",
   },
   {
-    _id: "A301",
     title: "Structural Design Task",
-    course: "RS103",
+    course: "6749386e9f2ab4abeec4b4dc",
     name: "Structural Engineering Design Task",
     description: "Design a structural component for aerospace use.",
     points: 110,
@@ -77,9 +70,8 @@ export const assignments = [
     availableUntilDate: "2024-11-21T23:59:00",
   },
   {
-    _id: "A302",
     title: "Orbital Calculations",
-    course: "RS103",
+    course: "6749386e9f2ab4abeec4b4dc",
     name: "Orbital Mechanics Calculations",
     description: "Calculate orbital trajectories for spacecraft.",
     points: 95,
@@ -88,9 +80,8 @@ export const assignments = [
     availableUntilDate: "2024-12-01T23:59:00",
   },
   {
-    _id: "A303",
     title: "Systems Engineering Exam",
-    course: "RS103",
+    course: "6749386e9f2ab4abeec4b4dc",
     name: "Systems Engineering Final Exam",
     description: "Comprehensive exam covering systems engineering topics.",
     points: 150,
