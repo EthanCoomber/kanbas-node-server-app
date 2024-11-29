@@ -4,15 +4,15 @@ import * as enrollmentsDao from "../Enrollments/dao.js";
 
 export default function UserRoutes(app) {
   const createUser = async (req, res) => {
-    const newUser = req.body;
-    const createdUser = await dao.createUser(newUser);
-    res.json(createdUser);
+    console.log('getting here createUser');
+    const user = await dao.createUser(req.body);
+    res.json(user);
   };
 
+
   const deleteUser = async (req, res) => {
-    const { userId } = req.params;
-    await dao.deleteUser(userId);
-    res.sendStatus(200);
+    const status = await dao.deleteUser(req.params.userId);
+    res.json(status);
   };
 
   const findAllUsers = async (req, res) => {
@@ -28,7 +28,6 @@ export default function UserRoutes(app) {
       return;
     }
     const users = await dao.findAllUsers();
-    console.log("users found", users);
     res.json(users);
   };
 
@@ -38,11 +37,14 @@ export default function UserRoutes(app) {
   };
 
   const updateUser = async (req, res) => {
-    const userId = req.params.userId;
+    const { userId } = req.params;
     const userUpdates = req.body;
+    console.log("updating user", userId, userUpdates);
     await dao.updateUser(userId, userUpdates);
-    const currentUser = await dao.findUserById(userId);
-    req.session["currentUser"] = currentUser;
+    const currentUser = req.session["currentUser"];
+    if (currentUser && currentUser._id === userId) {
+      req.session["currentUser"] = { ...currentUser, ...userUpdates };
+    }
     res.json(currentUser);
   };
 
