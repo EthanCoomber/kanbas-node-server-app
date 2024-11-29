@@ -14,9 +14,8 @@ export function findCoursesForEnrolledUser(userId) {
   return enrolledCourses;
 }
 export function createCourse(course) {
-  const newCourse = { ...course, _id: Date.now().toString() };
-  Database.courses = [...Database.courses, newCourse];
-  return newCourse;
+  delete course._id;
+  return model.create(course);
 }
 export function deleteCourse(courseId) {
   const { courses, enrollments } = Database;
