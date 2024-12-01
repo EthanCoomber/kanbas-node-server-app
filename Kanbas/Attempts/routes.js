@@ -1,16 +1,18 @@
+// routes.js
+
 import mongoose from "mongoose";
-import * as assignmentsDao from "./dao.js";
+import * as quizzesDao from "./dao.js";
 
 /**
- * Defines all assignment-related routes.
+ * Defines all quiz-related routes.
  * @param {Object} app - The Express application instance.
  */
-export default function AssignmentRoutes(app) {
+export default function QuizRoutes(app) {
   /**
-   * GET /api/courses/:cid/assignments
-   * Retrieves all assignments for a specific course.
+   * GET /api/courses/:cid/quizzes
+   * Retrieves all quizzes for a specific course.
    */
-  app.get("/api/courses/:cid/assignments", async (req, res) => {
+  app.get("/api/courses/:cid/quizzes", async (req, res) => {
     const { cid } = req.params;
 
     // Validate course ID
@@ -19,20 +21,20 @@ export default function AssignmentRoutes(app) {
     }
 
     try {
-      const assignments = await assignmentsDao.findAssignmentsForCourse(cid);
-      console.log("Assignments:", assignments);
-      res.json(assignments);
+      const quizzes = await quizzesDao.findQuizzesForCourse(cid);
+      console.log("Quizzes:", quizzes);
+      res.json(quizzes);
     } catch (error) {
-      console.error("Error fetching assignments:", error);
+      console.error("Error fetching quizzes:", error);
       res.status(500).send("Internal Server Error");
     }
   });
 
   /**
-   * POST /api/courses/:cid/assignments
-   * Creates a new assignment for a specific course.
+   * POST /api/courses/:cid/quizzes
+   * Creates a new quiz for a specific course.
    */
-  app.post("/api/courses/:cid/assignments", async (req, res) => {
+  app.post("/api/courses/:cid/quizzes", async (req, res) => {
     const { cid } = req.params;
 
     // Validate course ID
@@ -40,65 +42,126 @@ export default function AssignmentRoutes(app) {
       return res.status(400).json({ error: `Invalid course ID: ${cid}` });
     }
 
-    const newAssignmentData = {
+    const newQuizData = {
       ...req.body,
-      course: cid, // Associates the assignment with the course ID from the URL
+      course: cid, // Associates the quiz with the course ID from the URL
     };
 
     try {
-      const newAssignment = await assignmentsDao.createAssignment(newAssignmentData);
-      res.status(201).json(newAssignment); // 201 Created
+      const newQuiz = await quizzesDao.createQuiz(newQuizData);
+      res.status(201).json(newQuiz); // 201 Created
     } catch (error) {
-      console.error("Error creating assignment:", error);
+      console.error("Error creating quiz:", error);
       res.status(500).send("Internal Server Error");
     }
   });
 
   /**
-   * DELETE /api/assignments/:mid
-   * Deletes an assignment by its ID.
+   * DELETE /api/quizzes/:qid
+   * Deletes a quiz by its ID.
    */
-  app.delete("/api/assignments/:mid", async (req, res) => {
-    const { mid } = req.params;
+  app.delete("/api/quizzes/:qid", async (req, res) => {
+    const { qid } = req.params;
 
-    // Validate assignment ID
-    if (!mongoose.Types.ObjectId.isValid(mid)) {
-      return res.status(400).json({ error: `Invalid assignment ID: ${mid}` });
+    // Validate quiz ID
+    if (!mongoose.Types.ObjectId.isValid(qid)) {
+      return res.status(400).json({ error: `Invalid quiz ID: ${qid}` });
     }
 
     try {
-      await assignmentsDao.deleteAssignment(mid);
+      await quizzesDao.deleteQuiz(qid);
       res.sendStatus(204); // 204 No Content
     } catch (error) {
-      console.error("Error deleting assignment:", error);
+      console.error("Error deleting quiz:", error);
       res.status(500).send("Internal Server Error");
     }
   });
 
   /**
-   * PUT /api/assignments/:mid
-   * Updates an existing assignment by its ID.
+   * PUT /api/quizzes/:qid
+   * Updates an existing quiz by its ID.
    */
-  app.put("/api/assignments/:mid", async (req, res) => {
-    const { mid } = req.params;
+  app.put("/api/quizzes/:qid", async (req, res) => {
+    const { qid } = req.params;
 
-    // Validate assignment ID
-    if (!mongoose.Types.ObjectId.isValid(mid)) {
-      return res.status(400).json({ error: `Invalid assignment ID: ${mid}` });
+    // Validate quiz ID
+    if (!mongoose.Types.ObjectId.isValid(qid)) {
+      return res.status(400).json({ error: `Invalid quiz ID: ${qid}` });
     }
 
-    const assignmentUpdates = req.body;
+    const quizUpdates = req.body;
 
     try {
-      const updatedAssignment = await assignmentsDao.updateAssignment(mid, assignmentUpdates);
+      const updatedQuiz = await quizzesDao.updateQuiz(qid, quizUpdates);
 
-      if (updatedAssignment) {
+      if (updatedQuiz) {
         res.sendStatus(204); // 204 No Content
       } else {
-        res.status(404).json({ message: "Assignment not found" });
+        res.status(404).json({ message: "Quiz not found" });
       }
     } catch (error) {
-      console.error("Error updating assignment:", error);
+      console.error("Error updating quiz:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  });
+
+  /**
+   * POST /api/quizzes/:qid/attempt
+   * Records a new attempt for the authenticated user on a specific quiz.
+   */
+  app.post("/api/quizzes/:qid/attempt", async (req, res) => {
+    const { qid } = req.params;
+    const userId = req.user && req.user.id; // Assumes user is authenticated and user info is in req.user
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized: User not authenticated" });
+    }
+
+    // Validate quiz ID
+    if (!mongoose.Types.ObjectId.isValid(qid)) {
+      return res.status(400).json({ error: `Invalid quiz ID: ${qid}` });
+    }
+
+    try {
+      const updatedQuiz = await quizzesDao.incrementUserAttempt(qid, userId);
+      res.status(200).json({
+        message: "Attempt recorded successfully",
+        quizId: qid,
+        userId: userId,
+        updatedQuiz: updatedQuiz,
+      });
+    } catch (error) {
+      console.error("Error recording attempt:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  });
+
+  /**
+   * GET /api/quizzes/:qid/attempts
+   * Retrieves the number of attempts the authenticated user has made on a specific quiz.
+   */
+  app.get("/api/quizzes/:qid/attempts", async (req, res) => {
+    const { qid } = req.params;
+    const userId = req.user && req.user.id; // Assumes user is authenticated and user info is in req.user
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized: User not authenticated" });
+    }
+
+    // Validate quiz ID
+    if (!mongoose.Types.ObjectId.isValid(qid)) {
+      return res.status(400).json({ error: `Invalid quiz ID: ${qid}` });
+    }
+
+    try {
+      const attemptCount = await quizzesDao.getUserAttemptCount(qid, userId);
+      res.status(200).json({
+        quizId: qid,
+        userId: userId,
+        attemptCount: attemptCount,
+      });
+    } catch (error) {
+      console.error("Error retrieving attempt count:", error);
       res.status(500).send("Internal Server Error");
     }
   });
